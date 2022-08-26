@@ -1,6 +1,7 @@
 import "./styles.css";
 import { useState } from "react";
 import { convertToPostfix, Exp, stringToExp } from "./lib";
+import { InputStream, TokenStream } from "./lexer";
 
 function Node({ t }: { t: Exp }) {
   if ("value" in t) {
@@ -29,7 +30,6 @@ export default function App() {
     root: undefined
   });
   const [err, setErr] = useState("");
-
   return (
     <>
       <h3 style={{ textAlign: "center" }}>
@@ -41,6 +41,10 @@ export default function App() {
           e.preventDefault();
           try {
             // Check if exp is valid
+            let t = TokenStream(InputStream(exp));
+            while(!t.eof()) {
+                t.next();
+            }
             // eslint-disable-next-line
             let result = eval(exp);
             const postfix = convertToPostfix(exp);
